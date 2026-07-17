@@ -90,6 +90,7 @@ ADR_NAME_RE = re.compile(r"^\d{4}-[a-z0-9]+(?:-[a-z0-9]+)*\.md$")
 SHA_RE = re.compile(r"(?<![0-9a-f])([0-9a-f]{7,40})(?![0-9a-f])", re.IGNORECASE)
 DATE_RE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
 LEGACY_TODO_REGISTER = "docs/legacy-todos.json"
+PROJECT_POLICY_CONFIG = "scripts/agent/project-policy.json"
 
 
 @dataclass(frozen=True)
@@ -263,6 +264,26 @@ class RepositoryView:
                 return candidate
         return None
 
+    def _configured_integration_base(self) -> Optional[str]:
+        path = self.root / PROJECT_POLICY_CONFIG
+        if not path.is_file():
+            return None
+        try:
+            raw = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise HygieneRuntimeError(
+                "cannot read project policy config {}: {}".format(PROJECT_POLICY_CONFIG, exc)
+            )
+        if not isinstance(raw, dict) or raw.get("version") != 1:
+            raise HygieneRuntimeError("project policy config must use version 1")
+        canonical = raw.get("canonical_repository")
+        integration_base = raw.get("integration_base")
+        if not isinstance(canonical, str) or "/" not in canonical:
+            raise HygieneRuntimeError("project policy config needs canonical_repository as owner/name")
+        if not isinstance(integration_base, str) or not integration_base.strip():
+            raise HygieneRuntimeError("project policy config needs a non-empty integration_base")
+        return integration_base.strip()
+
     def _active_plan_base(self) -> Optional[str]:
         directory = self.root / "docs" / "exec-plans" / "active"
         if not directory.is_dir():
@@ -285,8 +306,6 @@ class RepositoryView:
         matching = [sha for matches, sha in active if matches]
         if len(matching) == 1:
             return matching[0]
-        if not matching and len(active) == 1:
-            return active[0][1]
         return None
 
     def _diff_specs(self) -> List[List[str]]:
@@ -304,6 +323,7 @@ class RepositoryView:
             self.base
             or os.environ.get("PROJECT_HYGIENE_BASE")
             or self._active_plan_base()
+            or self._configured_integration_base()
             or self._default_base()
         )
         if base:

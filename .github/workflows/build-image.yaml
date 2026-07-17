@@ -36,6 +36,7 @@ on:
   pull_request:
     branches:
       - 'main'
+      - 'codex/remove-lowlevel-board'
 
 # Allow stopping obsolete workflows
 concurrency:

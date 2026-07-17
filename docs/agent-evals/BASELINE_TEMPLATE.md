@@ -56,6 +56,8 @@ Report medians and worst observed values; link individual scorecards.
 | C08 | | | | | | N/A | | | | | |
 | C09 | | | | | | N/A | | | | | |
 | C10 | | | | | | N/A | | | | | |
+| C11 | | | | | | N/A | | | | | |
+| C12 | | | | | | | | | | | |
 
 ## Aggregate Comparison
 

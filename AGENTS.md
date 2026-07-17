@@ -18,6 +18,7 @@ Do not ask the user to restate facts already available in these sources. Verify 
 - [docs/PROJECT_STATE.md](docs/PROJECT_STATE.md): compact startup snapshot and router; not the backlog.
 - `docs/exec-plans/active/`: self-contained state, decisions, evidence, and next action for complex active work.
 - [GitHub Issues](https://github.com/MartinHaghani/open_mower_ros/issues): canonical outstanding-work backlog. Do not create unlinked Markdown TODO lists.
+- `scripts/agent/project-policy.json`: machine-readable canonical repository and integration-base routing used by local and CI policy.
 - `docs/decisions/`: append-only architectural decision records. Supersede decisions; do not rewrite their history.
 - Stable reference and operating docs under `docs/`: current system truth.
 - Git commits and PRs: implementation and verification ledger.
@@ -29,6 +30,7 @@ Record decision-relevant rationale, alternatives, evidence, risks, and uncertain
 ### Start and isolate
 
 - Map the request to one issue. Create a linked issue automatically when authorized GitHub access is available and no suitable issue exists.
+- A simple question, explanation, status report, read-only review, or diagnosis does not create an issue, branch, commit, or pull request unless the maintainer explicitly asks for tracking or a change.
 - Use one short-lived branch per issue, normally `codex/<issue>-<description>`.
 - Never mix unrelated dirty work. If the current checkout contains unrelated changes, preserve it and create an isolated worktree from the intended base.
 - Mark the issue/workstream in progress and put branch, base SHA, scope, acceptance criteria, and verification plan in the active ExecPlan.
@@ -61,11 +63,18 @@ For an authorized change/build task, agents may act without another prompt to cr
 
 - Use Conventional Commit subjects such as `fix(localization): ...` or `docs(agent-ops): ...`.
 - Substantive commits require a body covering why, important constraints, and validation, plus `Refs: #<issue>`.
+- For topic-branch pushes and pull requests, CI validates every non-merge commit in the event range. Only recognized Dependabot-generated subjects receive subject-only handling; other commits keep the normal evidence requirements. The exception registry is read from the immutable comparison base, with a known-empty registry for the first clean bootstrap, so a pull request cannot exempt itself.
 - Stage intentional paths only; never use broad staging to absorb unrelated changes.
 - Push an early recoverable checkpoint for multi-session work, then keep the draft PR and issue current.
 - Put `Closes #<issue>` in the PR body only when merge into the target branch should close the issue.
 
-Agents must obtain explicit user approval before merging, pushing directly to the default branch, force-pushing, rewriting shared history, deleting branches or worktrees containing unique work, deploying, changing live mower/VESC configuration, or performing a physical mower test. Never use destructive Git commands to work around a dirty tree.
+Agents must obtain explicit user approval before merging, pushing directly to the default branch or configured integration/base branch, force-pushing, rewriting shared history, deleting branches or worktrees containing unique work, deploying, changing live mower/VESC configuration, or performing a physical mower test. Never use destructive Git commands to work around a dirty tree.
+
+## Adopting this operating system in older tasks
+
+Already-running agents do not retroactively receive newly landed repository instructions. Before claiming adoption, verify that the agent-OS landing commit recorded in `docs/PROJECT_STATE.md` is an ancestor of the task branch and that both `AGENTS.md` and `.agents/skills/project-operations/SKILL.md` exist in that checkout. If it is not adopted, create or link any missing issue, topic branch, and plan required by the task—or queue missing GitHub tracking when access is unavailable—then checkpoint unique work. Do not checkout, rebase, reset, or clean a dirty worktree merely to obtain the policy. Integrate the landed operating-system commit only from a clean, reviewable state, inspect and trust the hooks, then start a new Codex task so startup instructions load afresh.
+
+The active project repository is `MartinHaghani/open_mower_ros`: push topic branches only to `origin`. `upstream` remains the read-only source fork at `ClemensElflein/open_mower_ros`; the local `alm` remote is parked and must not receive pushes unless the maintainer explicitly reactivates that migration.
 
 ## Repository map and safety boundaries
 

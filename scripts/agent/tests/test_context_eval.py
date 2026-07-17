@@ -30,13 +30,42 @@ class ContextEvalTests(unittest.TestCase):
                         "assertions": [
                             {"path": "AGENTS.md", "kind": "headings", "values": ["Guide"]},
                             {"path": "AGENTS.md", "kind": "contains", "values": ["PROJECT_STATE"]},
+                            {"path": "AGENTS.md", "kind": "absent", "values": ["MartinHaghani/ALM"]},
                             {"path": "AGENTS.md", "kind": "contains", "values": ["missing route"]},
                         ],
                     }
                 ]
             }
             results = EVAL.evaluate(root, spec)
-            self.assertEqual([True, True, False], [result.ok for result in results])
+            self.assertEqual([True, True, True, False], [result.ok for result in results])
+
+    def test_canonical_repository_substitution_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            guide = root / "AGENTS.md"
+            spec = {
+                "cases": [
+                    {
+                        "id": "authority",
+                        "assertions": [
+                            {
+                                "path": "AGENTS.md",
+                                "kind": "contains",
+                                "values": ["MartinHaghani/open_mower_ros"],
+                            },
+                            {
+                                "path": "AGENTS.md",
+                                "kind": "absent",
+                                "values": ["MartinHaghani/ALM", "alm/main"],
+                            },
+                        ],
+                    }
+                ]
+            }
+            guide.write_text("MartinHaghani/open_mower_ros\n", encoding="utf-8")
+            self.assertTrue(all(result.ok for result in EVAL.evaluate(root, spec)))
+            guide.write_text("MartinHaghani/ALM via alm/main\n", encoding="utf-8")
+            self.assertTrue(all(not result.ok for result in EVAL.evaluate(root, spec)))
 
 
 if __name__ == "__main__":

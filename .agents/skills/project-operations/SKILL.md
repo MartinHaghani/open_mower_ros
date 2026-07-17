@@ -55,6 +55,6 @@ Store decisions, rationale, alternatives, consequences, and evidence. Do not sto
 1. Review the complete diff and reconcile code, docs, ADRs, ExecPlan progress, project state, and linked issues.
 2. Run `python3 scripts/agent/check_project_hygiene.py --scope changed` plus the task-specific tests. Resolve errors and assess every warning.
 3. Create logical commits containing only this workstream. Use a Conventional Commit subject and a substantive body describing problem, decision, validation, risk, and follow-up when applicable.
-4. When repository policy grants Git autonomy and credentials are available, push only the topic branch and create or update a draft pull request without requesting a separate prompt. Never merge, force-push, rewrite shared history, or push the default branch automatically.
+4. When repository policy grants Git autonomy and credentials are available, push only the topic branch and create or update a draft pull request without requesting a separate prompt. Never merge, force-push, rewrite shared history, or push the default or configured integration/base branch automatically.
 5. Update or close the linked issue only when its acceptance criteria are actually satisfied. Move a completed ExecPlan to the completed directory and record outcomes.
 6. Report the outcome, files or commits, verification, residual risks, outstanding linked issues, and exact next action. A new agent must be able to resume without reconstructing the session.

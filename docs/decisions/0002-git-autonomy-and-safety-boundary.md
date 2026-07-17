@@ -34,7 +34,8 @@ when they are necessary to complete an already authorized repository task:
 
 The following actions require explicit human approval at the point of action:
 
-- merging a pull request or pushing directly to the default branch;
+- merging a pull request or pushing directly to the default or configured
+  integration/base branch;
 - force-pushing, rebasing shared published history, deleting a branch containing
   unmerged work, or otherwise reducing recoverability;
 - bypassing required checks, reviews, rulesets, or code-owner approval;
@@ -48,9 +49,10 @@ unrelated dirty state exist. Only one agent owns writes to a shared file or
 workstream at a time. Read-heavy exploration, testing, and review may run in
 parallel; their findings return to the owning agent for integration.
 
-The default branch must be protected by required CI checks. Safety-sensitive paths
-must have CODEOWNERS or equivalent required review. A push or API failure is recorded
-in the active plan and final report; it is not silently treated as completion.
+The default and active integration branches must accept changes through pull
+requests and stable CI checks. Safety-sensitive paths must have CODEOWNERS or
+equivalent required review. A push or API failure is recorded in the active plan
+and final report; it is not silently treated as completion.
 
 ## Alternatives considered
 

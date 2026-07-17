@@ -50,8 +50,41 @@ jobs:
       - name: Test agent policy tools
         run: python3 -m unittest discover -s scripts/agent/tests -p 'test_*.py'
 
+      - name: Validate commit messages in event range
+        if: >-
+          github.event_name == 'pull_request' ||
+          (github.event_name == 'push' && github.ref != 'refs/heads/main')
+        env:
+          ACTOR: ${{ github.actor }}
+          BASE_SHA: ${{ steps.policy-base.outputs.base_sha }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          exception_file="scripts/agent/commit-message-exceptions.json"
+          trusted_exception_file="$RUNNER_TEMP/commit-message-exceptions.json"
+          bot_args=()
+
+          if [ "$ACTOR" = "dependabot[bot]" ] || [ "$PR_AUTHOR" = "dependabot[bot]" ]; then
+            bot_args=(--allow-dependabot-subjects)
+          fi
+
+          # A pull request cannot exempt its own commits. After bootstrap, policy
+          # reads the immutable comparison-base registry. The first clean policy
+          # PR has no registry on its base, so it receives a known-empty registry.
+          if git cat-file -e "${BASE_SHA}:${exception_file}" 2>/dev/null; then
+            git show "${BASE_SHA}:${exception_file}" > "$trusted_exception_file"
+          else
+            printf '%s\n' '{"version":1,"exceptions":[]}' > "$trusted_exception_file"
+          fi
+
+          python3 scripts/agent/validate_commit_message.py \
+            --root . \
+            --range "${BASE_SHA}..HEAD" \
+            --exceptions "$trusted_exception_file" \
+            --body-policy auto \
+            "${bot_args[@]}"
+
       - name: Validate pull-request title, tracking, and handoff
-        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}

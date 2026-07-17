@@ -26,6 +26,7 @@ the task needs them.
 | Complex in-flight implementation | `docs/exec-plans/active/` |
 | Durable decision and rationale | `docs/decisions/` |
 | Outstanding work | [GitHub Issues](https://github.com/MartinHaghani/open_mower_ros/issues) |
+| Canonical repository and integration base | `scripts/agent/project-policy.json` |
 | Current system behavior | stable docs and implementation |
 | Implementation/validation history | commits and pull requests |
 
@@ -57,6 +58,19 @@ The hooks are intentionally bounded:
 
 CI is authoritative because local hooks can be skipped or untrusted.
 
+The policy workflow validates every non-merge commit in normal topic-branch pushes
+and pull requests, including Conventional Commit syntax and the labeled rationale,
+validation, and issue evidence required for substantive changes. Dependabot's
+canonical generated subjects receive subject-only handling only on a Dependabot
+event and when the commit author is the Dependabot bot; ordinary commits in the
+same range keep normal evidence requirements. Reviewed squash commits may use the
+fully validated PR handoff sections as their evidence body. CI reads
+`scripts/agent/commit-message-exceptions.json` from the immutable comparison
+base. The first clean bootstrap uses a known-empty registry, so a pull request
+cannot add an exception that waives its own commits. Issue #10 still owns the
+independent trust boundary needed to prevent a pull request from weakening the
+workflow itself.
+
 ## Run the policy checks
 
 From the repository root, use the commands documented by the project-operations
@@ -67,6 +81,9 @@ python3 scripts/agent/check_project_hygiene.py --root . --scope all
 python3 -m unittest discover -s scripts/agent/tests -p 'test_*.py'
 python3 scripts/agent/evaluate_agent_context.py
 python3 .github/scripts/test_validate_pr.py
+python3 scripts/agent/validate_commit_message.py \
+  --range <base-commit>..HEAD \
+  --exceptions scripts/agent/commit-message-exceptions.json
 pre-commit run
 git diff --check
 ```
@@ -76,7 +93,12 @@ For a task branch, the validator infers its base from
 1. explicit `--base`;
 2. `PROJECT_HYGIENE_BASE`;
 3. the uniquely matching active ExecPlan baseline;
-4. the default branch.
+4. `integration_base` in `scripts/agent/project-policy.json`;
+5. the default branch only as a legacy fallback.
+
+`project-policy.json` is the machine source of truth; `PROJECT_STATE.md` mirrors
+it for humans. When the integration line changes or is retired, update both files
+and the affected workflow branch filters in the same reviewed change.
 
 Use an explicit base when inference is ambiguous:
 
@@ -135,8 +157,33 @@ Pull requests require:
 - known limitations and follow-up issues.
 
 Routine topic-branch creation, commits, pushes, and draft PRs are automatic for an
-authorized implementation task. Merge, direct default-branch push, force-push,
-history rewriting, deployment, and live mower/VESC actions remain human-gated.
+authorized implementation task. Merge, direct default-branch or integration-base
+push, force-push, history rewriting, deployment, and live mower/VESC actions remain
+human-gated.
+Questions, explanations, read-only status or review reports, and diagnosis-only
+tasks do not create repository tracking or Git changes unless the maintainer asks
+for them.
+
+## Adoption by older agents
+
+An already-running Codex task does not retroactively reload repository instructions.
+After this operating system lands, its landing/squash commit must be recorded in
+[PROJECT_STATE.md](PROJECT_STATE.md). In an older task branch, check adoption with:
+
+```bash
+git merge-base --is-ancestor <agent-os-landed-commit> HEAD
+test -f AGENTS.md
+test -f .agents/skills/project-operations/SKILL.md
+```
+
+If the ancestor check fails, the task is not adopted. Create or link any missing
+issue, topic branch, and plan required by the task, or queue the missing GitHub item
+in the plan when access is unavailable; then checkpoint unique work. Do not checkout,
+rebase, reset, or clean a dirty worktree to install policy. Integrate the landed
+operating-system commit only in a clean reviewable state, review and trust the
+checked-in hooks, and then start a new Codex task so `AGENTS.md` and the project
+skill load at startup. Coordinator prompts alone are not proof that a branch has
+adopted the system.
 
 ## Current GitHub governance
 
@@ -150,6 +197,11 @@ Verified and applied on 2026-07-15 to `MartinHaghani/open_mower_ros`:
 - admin enforcement is enabled; force-push and branch deletion are disabled;
 - zero required approvals because the repository currently has only one
   collaborator and GitHub does not permit approving one's own PR.
+
+The temporary integration branch `codex/remove-lowlevel-board` is not yet proven
+PR-only by live settings. Never push it directly. Issue #10 owns protecting that ref
+or retiring it into `main` before this operating system is relied on as a required
+governance boundary.
 
 The checked-in policy workflow exposes the stable `Project policy / policy-gate`
 check. Do not make it required until this workflow is present on the protected
@@ -204,20 +256,23 @@ show only the few active workstreams and their authoritative links.
 
 ## Scheduled gardening
 
-The Codex desktop automation `OpenMower project hygiene` runs weekly on Monday in an
-isolated worktree. It audits documentation, project state, active plans, ADRs,
-issues/PRs, worktrees, and deterministic policy checks.
+The two existing Codex desktop jobs are paused because their prompts still target
+the parked ALM migration. They are not OpenMower automation evidence. After this
+operating system lands, retarget them without changing their schedules or safety
+gates: verify `origin` resolves to `MartinHaghani/open_mower_ros`, use the integration
+ref recorded in [PROJECT_STATE.md](PROJECT_STATE.md), create issues and draft PRs
+only in that repository, and fail closed if any authority check differs. Never push
+the parked `alm` remote. Issue #10 owns this gated reactivation.
 
-It also revisits issue #10: after the maintainer grants Projects scope, it may
-configure the documented Project; it may require the policy gate only after the
-workflow and independent-trust prerequisites are proven. Missing scope or unsafe
-review topology remains a reported blocker, never a reason to weaken protection.
+Once reactivated, `OpenMower project hygiene` audits documentation, project state,
+active plans, ADRs, issues/PRs, worktrees, deterministic checks, and governance each
+Monday. It may configure the documented Project or require the policy gate only
+after OAuth, workflow, and independent-trust prerequisites are proven.
 
-`OpenMower agent context regression` runs every four weeks on Wednesday in an
-isolated worktree. It samples at least three risk-balanced evaluation cases with
-three trials per case when the environment supports them, records raw measures, and
-updates issue #11. This periodic sample does not replace the full candidate cohort
-required before merging material context-policy changes.
+The four-week `OpenMower agent context regression` job samples at least three
+risk-balanced evaluation cases with three trials per case when supported, records
+raw measures, and updates issue #11. This periodic sample does not replace the full
+candidate cohort required before merging material context-policy changes.
 
 It may open issues or a draft PR for bounded low-risk repairs. It must not merge,
 force-push, delete unique worktrees, change mower runtime code, deploy, alter live
@@ -227,7 +282,7 @@ runs so their worktrees do not accumulate.
 
 ## Evaluate performance
 
-Use [agent-evals/README.md](agent-evals/README.md) and its ten representative cases
+Use [agent-evals/README.md](agent-evals/README.md) and its twelve representative cases
 to compare fresh-agent orientation, restart success, unsupported claims, human
 corrections, documentation drift, end-state correctness, tool use, and tokens.
 Deterministic structural checks run in CI; stochastic model trials run manually or

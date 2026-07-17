@@ -11,9 +11,21 @@ task start.
 
 ## Current Baseline
 
-- Last verified: 2026-07-15.
-- Branch used for this migration: `codex/agent-operating-system`.
+- Last verified: 2026-07-17.
+- Branch used for this migration: `codex/open-mower-agent-os`.
 - Inspected baseline commit: `329726f` (`webui: compact map selector controls`).
+- Canonical repository: `MartinHaghani/open_mower_ros`; use the `origin` remote for
+  topic-branch publication. The current integration ref is
+  `origin/codex/remove-lowlevel-board`, not the stale default-branch baseline. The
+  machine-readable authority is `scripts/agent/project-policy.json`.
+- Upstream source: `ClemensElflein/open_mower_ros` through the `upstream` remote.
+  The local `alm` remote is parked and must not receive pushes unless the maintainer
+  explicitly reactivates the deferred standalone-repository migration in
+  [issue #23](https://github.com/MartinHaghani/open_mower_ros/issues/23).
+- Adoption status: this operating system is not active on the integration ref until
+  its replacement PR merges. Tasks based on `329726f` must follow the checkpoint,
+  ancestry, hook-review, and new-task process in
+  [AGENT_OPERATIONS.md](AGENT_OPERATIONS.md#adoption-by-older-agents).
 - Runtime baseline: the launch-composed ROS Noetic workspace described in
   [ARCHITECTURE.md](ARCHITECTURE.md); the laptop coverage lab does not replace the
   runtime `slic3r_coverage_planner`.
@@ -37,10 +49,13 @@ page cannot see uncommitted changes in another worktree.
 
 ## Blockers and Risks
 
-The original `/Users/martinhaghani/Code/open_mower_ros` worktree had 23 modified or
-untracked paths across several unrelated workstreams at the 2026-07-15 snapshot.
-This migration uses a separate clean worktree and must not stage, reset, or rewrite
-that state.
+The original `/Users/martinhaghani/Code/open_mower_ros` worktree had 33 dirty paths
+at the 2026-07-17 verification: 31 modified and two untracked, with nothing staged.
+They contain active planner, localization, RTCM, controller-safety, and WebUI work;
+they are not cleanup debris. This migration uses a separate clean worktree and must
+not stage, reset, stash, or rewrite that state. The agent-OS foundation overlaps
+only `docs/COVERAGE_PLANNER_ROADMAP.md` and `docs/README.md`; checkpoint and reconcile
+those paths deliberately before eventual integration.
 
 The inspection also found additional unmerged worktrees for Mowrator slope
 reliability at commits `f56dd9a` and `bb84e454`, plus three Claude worktrees. Branch
@@ -54,11 +69,18 @@ Tracked rollout gaps are:
 - GitHub Issues are now authoritative and issues #1–#21 seed the migrated backlog.
   Every legacy first-party source TODO/FIXME marker has exact-content ownership in
   the machine-validated [legacy register](legacy-todos.json); new markers require
-  inline issue references.
-  the Projects v2 board still requires separate OAuth `project` scope and is tracked
+  inline issue references. The Projects v2 board still requires separate OAuth
+  `project` scope and is tracked
   by [issue #10](https://github.com/MartinHaghani/open_mower_ros/issues/10).
+- The two Codex desktop gardening jobs are paused because their saved prompts still
+  target the parked migration. Retarget and reactivate them only after this policy
+  lands, under issue #10 and the authority checks in
+  [AGENT_OPERATIONS.md](AGENT_OPERATIONS.md#scheduled-gardening).
 - Main protection is active without required CI checks; add the stable policy gate
   only after the workflow lands and passes, also under issue #10.
+- Direct pushes to the temporary integration branch are human-gated by policy but
+  not yet proven blocked by live GitHub settings. Issue #10 must protect that ref
+  PR-only or retire it into `main` before required governance relies on it.
 - The manual fresh-agent candidate cohort required before merge is outstanding in
   [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11); stochastic
   trials are evidence, not a required per-PR CI check.

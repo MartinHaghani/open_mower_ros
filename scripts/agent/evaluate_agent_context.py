@@ -60,6 +60,8 @@ def evaluate(root: Path, spec: Dict[str, Any]) -> List[Result]:
                 comparable = text if case_sensitive else text.casefold()
                 if kind == "contains":
                     missing = [value for value in values if (value if case_sensitive else value.casefold()) not in comparable]
+                elif kind == "absent":
+                    missing = [value for value in values if (value if case_sensitive else value.casefold()) in comparable]
                 elif kind == "headings":
                     headings = {
                         match.group(1).strip().casefold()
@@ -73,13 +75,20 @@ def evaluate(root: Path, spec: Dict[str, Any]) -> List[Result]:
                 else:
                     results.append(Result(case_id, path.relative_to(root).as_posix(), kind, False, "unknown assertion kind"))
                     continue
+                if missing:
+                    label = "unexpected" if kind == "absent" else "missing"
+                    detail = "{}: {}".format(label, ", ".join(missing))
+                elif kind == "absent":
+                    detail = "all prohibited values absent"
+                else:
+                    detail = "all assertions present"
                 results.append(
                     Result(
                         case_id,
                         path.relative_to(root).as_posix(),
                         kind,
                         not missing,
-                        "all assertions present" if not missing else "missing: {}".format(", ".join(missing)),
+                        detail,
                     )
                 )
     return results

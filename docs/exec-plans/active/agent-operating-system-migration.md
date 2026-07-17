@@ -3,9 +3,9 @@
 - Status: Active
 - Owner: coordinating Codex agent
 - Created: 2026-07-15
-- Last updated: 2026-07-15
+- Last updated: 2026-07-17
 - Issue: [#1](https://github.com/MartinHaghani/open_mower_ros/issues/1)
-- Branch/worktree: `codex/agent-operating-system` at `/Users/martinhaghani/Code/open_mower_ros_agent_ops`
+- Branch/worktree: `codex/open-mower-agent-os` at `/Users/martinhaghani/Code/open_mower_ros_agent_os_rescope`
 - Baseline commit: `329726f`
 - Related ADRs: [ADR 0001](../../decisions/0001-agent-documentation-and-context-model.md), [ADR 0002](../../decisions/0002-git-autonomy-and-safety-boundary.md)
 
@@ -31,7 +31,7 @@ hardware operations.
 - [x] (2026-07-15) Audited existing documentation, Git history, dirty state, and
   parallel worktrees; identified strong domain docs but no universal current-state,
   decision, or handoff layer.
-- [x] (2026-07-15) Created isolated branch `codex/agent-operating-system` and
+- [x] (2026-07-15) Created an isolated agent-OS branch and
   worktree from baseline `329726f` so unrelated source-worktree changes remain
   untouched.
 - [x] (2026-07-15) Added the documentation foundation: planning policy, project
@@ -47,11 +47,34 @@ hardware operations.
 - [x] (2026-07-15) Added issue/PR templates, CODEOWNERS, pinned workflow actions,
   least-privilege workflow permissions, and policy CI without weakening the Docker
   build or Release Drafter.
+- [x] (2026-07-16) Re-scoped the reusable OpenMower operating-system commits onto
+  `codex/open-mower-agent-os` from exact baseline `329726f`; excluded the deferred
+  standalone-repository identity work, stale PR handoff, and unrelated Docker fix.
+- [x] (2026-07-16) Added actual event-range commit validation with an immutable-base
+  exception registry and a known-empty clean bootstrap, so a PR cannot exempt its
+  own commits. No historical migration exceptions are carried.
+- [x] (2026-07-16) Added machine-readable canonical-repository and integration-base
+  routing for small/no-ExecPlan first pushes, hardened Dependabot waivers to verified
+  bot-authored bump commits, preserved literal committed subjects, and accepted only
+  fully validated PR handoffs for reviewed squash commits.
+- [x] (2026-07-16) Added the current integration branch to the four-way Docker PR
+  validation trigger; remove that temporary trigger only when integration returns
+  to `main`.
 - [x] (2026-07-15) Enabled Issues, created labels and issues #1–#12, configured
   squash-only merging and branch cleanup, and protected `main` with PR-only linear
   history, resolved conversations, and force-push/deletion blocks.
-- [x] (2026-07-15) Added active isolated Codex automations for weekly project
-  hygiene and four-week rotating fresh-agent regression sampling.
+- [x] (2026-07-15) Added isolated Codex automations for weekly project hygiene and
+  four-week rotating fresh-agent regression sampling.
+- [x] (2026-07-16) Paused both jobs after confirming their saved prompts still
+  targeted the deferred standalone migration; issue #10 owns safe OpenMower
+  retargeting and reactivation after this operating system lands.
+- [x] (2026-07-16) Verified the source worktree remained byte-for-byte unchanged
+  during the rescope: tracked-diff SHA-256 `ef9395675adf27c2773dcd8d2ce18719a91030d004eb38d6bc52d6d195957c30`
+  and status SHA-256 `8d2cc6f9743b519000fe1551320f337a2a688eff96cfe3f6e64d8e17df5f5de9`
+  match the pre-edit snapshot; the two untracked-file hashes also match.
+- [x] (2026-07-17) Re-ran the complete local policy matrix and independent scope,
+  policy, and documentation reviews after hardening repository routing, commit-range
+  evidence, and older-agent adoption guidance.
 - [ ] Create the Projects v2 board after the GitHub credential receives `project`
   scope; add the policy gate as required only after it lands and passes.
 - [x] (2026-07-15) Validated deterministic fresh-agent orientation, hooks, skill
@@ -66,17 +89,21 @@ hardware operations.
 - [ ] Prepare and review the draft PR, complete the Projects v2/required-check
   rollout in issue #10, then move this plan to `completed/` after merge.
 
-Exact next action: publish the reviewed migration branch as a draft PR linked to
-issue #1.
+Exact next action: finish the clean-branch validation matrix, publish a new draft PR
+against `codex/remove-lowlevel-board` linked to issue #1, then mark the mixed former
+[open_mower_ros PR #22](https://github.com/MartinHaghani/open_mower_ros/pull/22)
+as superseded without rewriting its branch.
 
 ## Surprises & Discoveries
 
 - The repository already contains detailed architecture, hardware, planner, and
   maintenance documentation. The primary gap is state ownership and enforcement,
   not lack of domain prose.
-- The source worktree contains unrelated uncommitted changes spanning multiple
-  workstreams. An isolated worktree is required to avoid accidental staging or
-  rewriting of user work.
+- The source worktree contains 33 unrelated dirty paths spanning multiple
+  workstreams: 31 modified and two untracked, with nothing staged. The agent-OS
+  foundation overlaps only `docs/COVERAGE_PLANNER_ROADMAP.md` and `docs/README.md`.
+  An isolated worktree is required; those two paths must be checkpointed and
+  reconciled deliberately before eventual integration.
 - Several local worktrees and unmerged slope branches exist. A branch name is not
   completion evidence; every agent must inspect worktree state and branch-local
   handoffs before integration or cleanup.
@@ -116,6 +143,13 @@ issue #1.
 - 2026-07-15 — Parallelize bounded read-heavy exploration, testing, and review;
   assign one write owner per file/workstream and use isolated worktrees for
   concurrent implementation.
+- 2026-07-16 — Keep `MartinHaghani/open_mower_ros` authoritative for current work,
+  park the `alm` remote, and publish a clean replacement PR rather than rewriting
+  shared PR #22 history. Retarget scheduled jobs only after the clean policy lands.
+- 2026-07-16 — Route range checks through a versioned integration-base config rather
+  than stale default-branch inference. Human-gate direct pushes to both default and
+  integration refs; let reviewed squash commits use the already validated PR
+  handoff body while keeping ordinary commits on labeled evidence rules.
 
 ## Outcomes & Retrospective
 
@@ -125,9 +159,10 @@ validators, policy CI, GitHub templates, evaluation cases, and Git conventions a
 have deterministic coverage. The migration also exposed and assigned every legacy
 first-party source TODO instead of silently carrying it forward.
 
-Verification passed for the agent-policy and PR-policy suites, seven fresh-agent
-assertions, full and strict changed-scope hygiene, action workflow parsing,
-JSON/TOML parsing, hook output parsing, changed-file pre-commit, and whitespace.
+Local verification passes 37 agent-policy tests, nine PR-policy tests, 15/15
+fresh-agent context assertions, strict all-scope and changed-scope hygiene,
+commit-range validation, Actionlint 1.7.12, Python compilation, JSON/TOML parsing,
+the pinned changed-file pre-commit hooks, and whitespace checks.
 No ROS build or live hardware validation was required because runtime behavior and
 first-party source are unchanged; legacy markers are mapped through the validated
 register rather than comment-only source edits.
@@ -147,7 +182,7 @@ documentation. Safety-sensitive areas include `src/mower_logic`,
 `src/mower_comms_v1`, `src/mower_comms_v2`, hardware-specific parameters, launch
 wiring, container entrypoints, and live VESC settings.
 
-The operating-system implementation belongs on `codex/agent-operating-system` in
+The operating-system implementation belongs on `codex/open-mower-agent-os` in
 the isolated worktree named above. Do not stage or clean files in the source
 worktree. Before editing, inspect `git status --short --branch`, all worktrees, the
 active plan, and file ownership assigned to parallel agents.
@@ -182,7 +217,7 @@ and archive this plan while preparing a draft PR for human review.
 Work only in the isolated worktree:
 
 ```bash
-cd /Users/martinhaghani/Code/open_mower_ros_agent_ops
+cd /Users/martinhaghani/Code/open_mower_ros_agent_os_rescope
 git status --short --branch
 git worktree list --porcelain
 ```
@@ -203,6 +238,9 @@ python3 scripts/agent/check_project_hygiene.py --root . --scope all
 python3 -m unittest discover -s scripts/agent/tests -p 'test_*.py'
 python3 scripts/agent/evaluate_agent_context.py
 python3 .github/scripts/test_validate_pr.py
+python3 scripts/agent/validate_commit_message.py \
+  --range 329726f..HEAD \
+  --exceptions scripts/agent/commit-message-exceptions.json
 # After staging only the intended paths:
 pre-commit run
 git diff --check
@@ -229,8 +267,8 @@ The migration is accepted only when all of the following are demonstrated:
   validation evidence, or PR linkage fails locally and in CI with an actionable
   message.
 - Topic-branch commit, push, and draft-PR preparation can run without repeated user
-  prompts, while merge, force-push, direct default-branch push, deployment, and live
-  hardware operations remain human-gated.
+  prompts, while merge, force-push, direct default- or configured integration-branch
+  push, deployment, and live hardware operations remain human-gated.
 - Existing repository build workflows still parse and the new checks run on pull
   requests. Documentation links and templates validate on a clean checkout.
 - `git diff --check` and all added automated tests pass. Any environment-dependent
@@ -268,6 +306,7 @@ migration as complete.
   this migration.
 - Deterministic checks: repository validation scripts, pre-commit, and GitHub Actions
   added by this migration.
+- Machine authority: `scripts/agent/project-policy.json`.
 - Tracking/review: GitHub Issues, Project items, pull-request template, CODEOWNERS,
   draft PR, and protected-branch settings.
 
@@ -281,3 +320,8 @@ migration as complete.
 - 2026-07-15 — Replaced attempted full-tree formatting with a changed-file ratchet,
   tracked inherited debt in issue #21, added the exact legacy-marker register, and
   incorporated independent correctness and documentation review findings.
+- 2026-07-16 — Re-scoped the implementation to a new OpenMower-only branch, added
+  clean commit-range enforcement and repository-authority regression checks, and
+  paused the two incorrectly targeted scheduled jobs pending post-merge retargeting.
+- 2026-07-17 — Recorded the final 37-test policy matrix and independent review
+  results before publishing the clean replacement draft PR.

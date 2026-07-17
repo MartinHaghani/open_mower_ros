@@ -166,6 +166,43 @@ Refresh after material work.
         self.assertEqual(self.baseline, view._active_plan_base())
         self.assertEqual(self.baseline, view.comparison_base())
 
+    def test_configured_integration_base_precedes_stale_default(self) -> None:
+        self.git("branch", "integration", self.baseline)
+        self.write(
+            "scripts/agent/project-policy.json",
+            '{\n'
+            '  "version": 1,\n'
+            '  "canonical_repository": "example/project",\n'
+            '  "integration_base": "integration"\n'
+            '}\n',
+        )
+        view = HYGIENE.RepositoryView(self.root, None)
+        self.assertEqual("integration", view._configured_integration_base())
+        self.assertEqual("integration", view.comparison_base())
+
+    def test_unrelated_single_active_plan_does_not_override_integration_base(self) -> None:
+        self.git("branch", "integration", self.baseline)
+        self.write(
+            "scripts/agent/project-policy.json",
+            '{\n'
+            '  "version": 1,\n'
+            '  "canonical_repository": "example/project",\n'
+            '  "integration_base": "integration"\n'
+            '}\n',
+        )
+        self.write(
+            "docs/exec-plans/active/unrelated.md",
+            """# Unrelated work
+
+- Status: Active
+- Branch/worktree: `codex/unrelated-work`
+- Baseline commit: `{sha}`
+""".format(sha=self.git("rev-parse", "HEAD").strip()),
+        )
+        view = HYGIENE.RepositoryView(self.root, None)
+        self.assertIsNone(view._active_plan_base())
+        self.assertEqual("integration", view.comparison_base())
+
 
 if __name__ == "__main__":
     unittest.main()

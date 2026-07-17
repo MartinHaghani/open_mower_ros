@@ -86,6 +86,86 @@
           ]
         }
       ]
+    },
+    {
+      "id": "canonical-repository-and-adoption",
+      "assertions": [
+        {
+          "path": "AGENTS.md",
+          "kind": "contains",
+          "values": [
+            "MartinHaghani/open_mower_ros",
+            "simple question",
+            "new Codex task",
+            "configured integration/base branch",
+            "project-policy.json"
+          ]
+        },
+        {
+          "path": "AGENTS.md",
+          "kind": "absent",
+          "values": [
+            "MartinHaghani/ALM",
+            "alm/main",
+            "ALM canonical"
+          ]
+        },
+        {
+          "path": "docs/PROJECT_STATE.md",
+          "kind": "contains",
+          "values": [
+            "MartinHaghani/open_mower_ros",
+            "origin/codex/remove-lowlevel-board",
+            "parked",
+            "issues/23"
+          ]
+        },
+        {
+          "path": "docs/PROJECT_STATE.md",
+          "kind": "absent",
+          "values": [
+            "MartinHaghani/ALM",
+            "alm/main",
+            "ALM canonical"
+          ]
+        },
+        {
+          "path": "docs/AGENT_OPERATIONS.md",
+          "kind": "contains",
+          "values": [
+            "MartinHaghani/open_mower_ros",
+            "merge-base --is-ancestor",
+            "paused",
+            "landing/squash commit",
+            "integration-base"
+          ]
+        },
+        {
+          "path": "docs/AGENT_OPERATIONS.md",
+          "kind": "absent",
+          "values": [
+            "MartinHaghani/ALM",
+            "alm/main",
+            "ALM canonical"
+          ]
+        },
+        {
+          "path": "scripts/agent/project-policy.json",
+          "kind": "contains",
+          "values": [
+            "MartinHaghani/open_mower_ros",
+            "origin/codex/remove-lowlevel-board"
+          ]
+        },
+        {
+          "path": "scripts/agent/project-policy.json",
+          "kind": "absent",
+          "values": [
+            "MartinHaghani/ALM",
+            "alm/main"
+          ]
+        }
+      ]
     }
   ]
 }
