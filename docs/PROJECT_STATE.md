@@ -11,7 +11,7 @@ task start.
 
 ## Current Baseline
 
-- Last verified: 2026-07-17.
+- Last verified: 2026-07-21.
 - Branch used for this migration: `codex/open-mower-agent-os`.
 - Inspected baseline commit: `329726f` (`webui: compact map selector controls`).
 - Canonical repository: `MartinHaghani/open_mower_ros`; use the `origin` remote for
@@ -41,7 +41,7 @@ page cannot see uncommitted changes in another worktree.
 
 | Workstream | Status | Snapshot | Authoritative next-step source |
 |---|---|---|---|
-| Agent documentation, context, and Git operating system | active | Local implementation and repository settings are ready for draft review from `329726f`; external rollout remains | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1) and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
+| Agent documentation, context, and Git operating system | active | Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) is open; its previous head passed project policy, while fresh policy and corrected four-way Docker validation are pending on the head that includes the reviewed change from draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27) | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1) and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
 | Existing coverage planner lab | planned | P0, P1, P3, P10, P11, P12, and P13 are recorded as landed; P5 is the next sequence item | [roadmap](COVERAGE_PLANNER_ROADMAP.md) and [issue #3](https://github.com/MartinHaghani/open_mower_ros/issues/3) |
 | Coverage Planner V2 exploration | planned | M1 evidence and substantial M2.x local prototypes exist; M2 acceptance reconciliation and M3 candidate routing are outstanding | [algorithm status](COVERAGE_PLANNER_V2_ALGORITHM_PLAN.md#current-implementation-status) and [issue #8](https://github.com/MartinHaghani/open_mower_ros/issues/8) |
 | Passive SLAM confidence weighting | planned | No active implementation plan | [issue #2](https://github.com/MartinHaghani/open_mower_ros/issues/2) |
@@ -87,15 +87,23 @@ Tracked rollout gaps are:
 - Full-tree pre-commit debt is ratcheted to added/modified files and tracked by
   [issue #21](https://github.com/MartinHaghani/open_mower_ros/issues/21).
 - Parallel slope branches require the branch-by-branch audit in issue #12.
+- PR #24's first four-way build exposed a pre-existing ARM64 default-image failure:
+  the base image omits the `input` group. Immediate issue
+  [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), focused draft PR
+  [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27), and portability
+  follow-up [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26) own the
+  work. Do not merge or deploy until PR #24's corrected, non-publishing
+  default/legacy by amd64/arm64 matrix is green; do not use the publishing manual
+  dispatch path as a substitute.
 
 These are migration gaps, not a replacement backlog. Remove a bullet when its
 linked issue is completed; do not add implementation checklists here.
 
 ## Next Actions
 
-1. Publish the reviewed migration branch as a draft PR linked to
-   [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1); preserve its
-   isolated worktree until the PR is merged or explicitly abandoned.
+1. Wait for and record a fresh green four-way Docker validation on draft PR #24
+   with the reviewed correction from draft PR #27; keep both PRs unmerged and
+   perform no deployment.
 2. Run and record the pre-merge candidate cohort under issue #11.
 3. Complete the external Project/required-check rollout in issue #10 after the
    workflow lands.

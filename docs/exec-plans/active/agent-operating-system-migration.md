@@ -3,7 +3,7 @@
 - Status: Active
 - Owner: coordinating Codex agent
 - Created: 2026-07-15
-- Last updated: 2026-07-17
+- Last updated: 2026-07-21
 - Issue: [#1](https://github.com/MartinHaghani/open_mower_ros/issues/1)
 - Branch/worktree: `codex/open-mower-agent-os` at `/Users/martinhaghani/Code/open_mower_ros_agent_os_rescope`
 - Baseline commit: `329726f`
@@ -75,6 +75,20 @@ hardware operations.
 - [x] (2026-07-17) Re-ran the complete local policy matrix and independent scope,
   policy, and documentation reviews after hardening repository routing, commit-range
   evidence, and older-agent adoption guidance.
+- [x] (2026-07-21) Published replacement draft PR
+  [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24), confirmed its
+  project-policy check passed, and closed the superseded OpenMower PR #22 without
+  deleting its branch or history.
+- [x] (2026-07-21) Diagnosed PR #24's first four-way validation attempt: the ARM64
+  default image failed because the Focal base lacks the `input` group, while the
+  other three matrix jobs were cancelled by fail-fast. Created immediate issue
+  [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), portability and
+  least-privilege follow-up [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26),
+  and focused draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27).
+  Commit `ea82f06` carries the reviewed correction on this validation branch without
+  merging either PR or publishing an image.
+- [ ] Obtain a fresh green, non-publishing default/legacy by amd64/arm64 matrix on
+  PR #24 at or after `ea82f06`; do not merge or deploy until all four jobs pass.
 - [ ] Create the Projects v2 board after the GitHub credential receives `project`
   scope; add the policy gate as required only after it lands and passes.
 - [x] (2026-07-15) Validated deterministic fresh-agent orientation, hooks, skill
@@ -86,13 +100,13 @@ hardware operations.
   issues #13–#20 capture the newly discovered work.
 - [ ] Run and record the required manual fresh-agent candidate cohort under issue
   #11 before merge.
-- [ ] Prepare and review the draft PR, complete the Projects v2/required-check
-  rollout in issue #10, then move this plan to `completed/` after merge.
+- [ ] After all CI, candidate-cohort, and external rollout gates pass, obtain human
+  merge approval and move this plan to `completed/` in the completion change.
 
-Exact next action: finish the clean-branch validation matrix, publish a new draft PR
-against `codex/remove-lowlevel-board` linked to issue #1, then mark the mixed former
-[open_mower_ros PR #22](https://github.com/MartinHaghani/open_mower_ros/pull/22)
-as superseded without rewriting its branch.
+Exact next action: align PR #24's handoff, push the topic branch, and wait for the
+project-policy check and all four non-publishing Docker validation jobs. Then record
+the result in this plan and issue #25. Keep PRs #24 and #27 draft and unmerged, and
+perform no deployment.
 
 ## Surprises & Discoveries
 
@@ -126,6 +140,13 @@ as superseded without rewriting its branch.
   all-files run exposed inherited formatter and executable-bit debt and attempted
   broad unrelated rewrites. Those side effects were removed, CI now ratchets
   added/modified files, and issue #21 owns deliberate full-tree cleanup.
+- The ARM64 `ros:noetic-ros-base-focal` image does not provide an `input` group, so
+  the default Dockerfile's existing `adduser openmower input` step failed. The
+  focused correction creates GID `996` explicitly as the current OSv2 assumption;
+  issue #26 owns a host-aware, least-privilege design.
+- A focused PR targeting `codex/remove-lowlevel-board` does not trigger the baseline
+  four-way build, while that workflow's manual-dispatch path publishes images. The
+  safe pre-merge evidence path is PR #24's PR-only, non-publishing validation job.
 
 ## Decision Log
 
@@ -150,6 +171,10 @@ as superseded without rewriting its branch.
   than stale default-branch inference. Human-gate direct pushes to both default and
   integration refs; let reviewed squash commits use the already validated PR
   handoff body while keeping ordinary commits on labeled evidence rules.
+- 2026-07-21 — Keep the ARM64 Docker correction separately reviewable in PR #27,
+  carry the same reviewed change on PR #24 only to obtain fresh non-publishing
+  four-way evidence, and reject manual dispatch, merge, or deployment until that
+  matrix is green.
 
 ## Outcomes & Retrospective
 
@@ -162,17 +187,18 @@ first-party source TODO instead of silently carrying it forward.
 Local verification passes 37 agent-policy tests, nine PR-policy tests, 15/15
 fresh-agent context assertions, strict all-scope and changed-scope hygiene,
 commit-range validation, Actionlint 1.7.12, Python compilation, JSON/TOML parsing,
-the pinned changed-file pre-commit hooks, and whitespace checks.
-No ROS build or live hardware validation was required because runtime behavior and
-first-party source are unchanged; legacy markers are mapped through the validated
-register rather than comment-only source edits.
+the pinned changed-file pre-commit hooks, and whitespace checks. The separately
+reviewed Docker correction also passes focused pre-commit, whitespace, and a
+disposable ARM64 ROS-base user/group test; its fresh four-way CI run remains the
+merge and deployment gate. No ROS or live-hardware operation was performed.
 
-The remaining rollout is deliberately external: Projects v2 needs one-time OAuth
-scope, and the policy gate cannot safely become a required check until its workflow
-has landed and passed. Issue #10 owns both steps. The manual candidate cohort in
-issue #11 is also required before merge, while full-tree formatting cleanup remains
-separate in issue #21. This plan remains active through PR review and merge, then
-moves to `completed/`.
+The remaining rollout is deliberately gated: the corrected PR #24 head still needs
+a fresh green four-way Docker matrix. Projects v2 needs one-time OAuth scope, and
+the policy gate cannot safely become a required check until its workflow has landed
+and passed; issue #10 owns both steps. The manual candidate cohort in issue #11 is
+also required before merge, while full-tree formatting cleanup remains separate in
+issue #21. This plan remains active through PR review and merge, then moves to
+`completed/`.
 
 ## Context and Orientation
 
@@ -209,8 +235,10 @@ workflow. Add issue and PR templates, CODEOWNERS for safety-sensitive paths, and
 document the repository settings that cannot be enforced by checked-in files alone.
 
 Finally, test onboarding and closeout behavior in a clean checkout and across three
-representative scenarios. Reconcile evidence and outstanding items, then complete
-and archive this plan while preparing a draft PR for human review.
+representative scenarios. Maintain draft PR #24 through the fresh-agent cohort,
+external rollout, and corrected four-way Docker validation. Keep the prerequisite
+Docker correction separately reviewable in draft PR #27, and complete and archive
+this plan only after every merge gate passes and a human authorizes the merge.
 
 ## Concrete Steps
 
@@ -249,6 +277,20 @@ git status --short
 
 Expected success is a zero exit status, no broken repository-local links, no missing
 required sections, and a diff containing only the intended operating-system files.
+
+For the current non-publishing validation gate:
+
+```bash
+gh pr view 24 --repo MartinHaghani/open_mower_ros \
+  --json headRefOid,isDraft,mergeable,statusCheckRollup
+git push origin codex/open-mower-agent-os
+gh pr checks 24 --repo MartinHaghani/open_mower_ros --watch --interval 30
+```
+
+The expected result is a successful `policy-gate` plus four successful
+`validate-pr-build` jobs covering default/legacy on amd64/arm64. The publishing
+`build` and `merge` jobs must remain skipped for the pull-request event. Do not use
+the baseline workflow's manual-dispatch path because that event publishes images.
 
 ## Validation and Acceptance
 
@@ -309,6 +351,12 @@ migration as complete.
 - Machine authority: `scripts/agent/project-policy.json`.
 - Tracking/review: GitHub Issues, Project items, pull-request template, CODEOWNERS,
   draft PR, and protected-branch settings.
+- Current review and validation: Agent OS draft PR
+  [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24), immediate Docker
+  issue [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), focused
+  fix draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27), and
+  host-aware device-access follow-up
+  [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26).
 
 ## Plan Change Log
 
@@ -325,3 +373,6 @@ migration as complete.
   paused the two incorrectly targeted scheduled jobs pending post-merge retargeting.
 - 2026-07-17 — Recorded the final 37-test policy matrix and independent review
   results before publishing the clean replacement draft PR.
+- 2026-07-21 — Recorded draft PR #24 publication, the ARM64 default-image failure,
+  focused issues #25/#26 and draft PR #27, the non-publishing validation route, and
+  the explicit no-merge/no-deploy gate.
