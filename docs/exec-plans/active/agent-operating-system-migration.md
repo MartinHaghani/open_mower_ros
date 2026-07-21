@@ -87,8 +87,11 @@ hardware operations.
   and focused draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27).
   Commit `ea82f06` carries the reviewed correction on this validation branch without
   merging either PR or publishing an image.
-- [ ] Obtain a fresh green, non-publishing default/legacy by amd64/arm64 matrix on
-  PR #24 at or after `ea82f06`; do not merge or deploy until all four jobs pass.
+- [x] (2026-07-21) Obtained a fresh green, non-publishing default/legacy by
+  amd64/arm64 matrix on corrected head `b14d647` in
+  [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884).
+  Both policy checks passed, all four validation jobs passed, and the publishing
+  `build` and `merge` jobs remained skipped. Neither PR was merged or deployed.
 - [ ] Create the Projects v2 board after the GitHub credential receives `project`
   scope; add the policy gate as required only after it lands and passes.
 - [x] (2026-07-15) Validated deterministic fresh-agent orientation, hooks, skill
@@ -103,10 +106,10 @@ hardware operations.
 - [ ] After all CI, candidate-cohort, and external rollout gates pass, obtain human
   merge approval and move this plan to `completed/` in the completion change.
 
-Exact next action: align PR #24's handoff, push the topic branch, and wait for the
-project-policy check and all four non-publishing Docker validation jobs. Then record
-the result in this plan and issue #25. Keep PRs #24 and #27 draft and unmerged, and
-perform no deployment.
+Exact next action: keep PR #24's current head green while completing the manual
+candidate cohort in issue #11 and external rollout in issue #10. Any head change
+must repeat project policy and all four non-publishing Docker jobs. Keep PRs #24 and
+#27 draft and unmerged, and perform no deployment without explicit human approval.
 
 ## Surprises & Discoveries
 
@@ -189,16 +192,18 @@ fresh-agent context assertions, strict all-scope and changed-scope hygiene,
 commit-range validation, Actionlint 1.7.12, Python compilation, JSON/TOML parsing,
 the pinned changed-file pre-commit hooks, and whitespace checks. The separately
 reviewed Docker correction also passes focused pre-commit, whitespace, and a
-disposable ARM64 ROS-base user/group test; its fresh four-way CI run remains the
-merge and deployment gate. No ROS or live-hardware operation was performed.
+disposable ARM64 ROS-base user/group test. Corrected head `b14d647` then passed all
+four non-publishing Docker jobs in
+[run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884);
+any later head must retain those checks. No ROS, deployment, or live-hardware
+operation was performed.
 
-The remaining rollout is deliberately gated: the corrected PR #24 head still needs
-a fresh green four-way Docker matrix. Projects v2 needs one-time OAuth scope, and
-the policy gate cannot safely become a required check until its workflow has landed
-and passed; issue #10 owns both steps. The manual candidate cohort in issue #11 is
-also required before merge, while full-tree formatting cleanup remains separate in
-issue #21. This plan remains active through PR review and merge, then moves to
-`completed/`.
+The remaining rollout is deliberately external. Projects v2 needs one-time OAuth
+scope, and the policy gate cannot safely become a required check until its workflow
+has landed and passed; issue #10 owns both steps. The manual candidate cohort in
+issue #11 is also required before merge, while full-tree formatting cleanup remains
+separate in issue #21. This plan remains active through PR review and merge, then
+moves to `completed/`.
 
 ## Context and Orientation
 
@@ -376,3 +381,6 @@ migration as complete.
 - 2026-07-21 — Recorded draft PR #24 publication, the ARM64 default-image failure,
   focused issues #25/#26 and draft PR #27, the non-publishing validation route, and
   the explicit no-merge/no-deploy gate.
+- 2026-07-21 — Recorded fresh green policy and default/legacy by amd64/arm64
+  validation on corrected head `b14d647`; publishing remained skipped and both PRs
+  remained draft and unmerged.

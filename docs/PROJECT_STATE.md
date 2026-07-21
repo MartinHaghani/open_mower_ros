@@ -41,7 +41,7 @@ page cannot see uncommitted changes in another worktree.
 
 | Workstream | Status | Snapshot | Authoritative next-step source |
 |---|---|---|---|
-| Agent documentation, context, and Git operating system | active | Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) is open; its previous head passed project policy, while fresh policy and corrected four-way Docker validation are pending on the head that includes the reviewed change from draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27) | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1) and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
+| Agent documentation, context, and Git operating system | active | Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) is open; corrected implementation head `b14d647` passed project policy and all four non-publishing Docker jobs in [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884), while the focused fix remains separately reviewable in draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27) | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1) and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
 | Existing coverage planner lab | planned | P0, P1, P3, P10, P11, P12, and P13 are recorded as landed; P5 is the next sequence item | [roadmap](COVERAGE_PLANNER_ROADMAP.md) and [issue #3](https://github.com/MartinHaghani/open_mower_ros/issues/3) |
 | Coverage Planner V2 exploration | planned | M1 evidence and substantial M2.x local prototypes exist; M2 acceptance reconciliation and M3 candidate routing are outstanding | [algorithm status](COVERAGE_PLANNER_V2_ALGORITHM_PLAN.md#current-implementation-status) and [issue #8](https://github.com/MartinHaghani/open_mower_ros/issues/8) |
 | Passive SLAM confidence weighting | planned | No active implementation plan | [issue #2](https://github.com/MartinHaghani/open_mower_ros/issues/2) |
@@ -92,18 +92,20 @@ Tracked rollout gaps are:
   [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), focused draft PR
   [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27), and portability
   follow-up [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26) own the
-  work. Do not merge or deploy until PR #24's corrected, non-publishing
-  default/legacy by amd64/arm64 matrix is green; do not use the publishing manual
-  dispatch path as a substitute.
+  work. Corrected head `b14d647` passed default/legacy on amd64/arm64 in
+  [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884),
+  with publishing jobs skipped. Neither PR was merged or deployed; any later head
+  must retain the required checks, and the publishing manual-dispatch path is not a
+  validation substitute.
 
 These are migration gaps, not a replacement backlog. Remove a bullet when its
 linked issue is completed; do not add implementation checklists here.
 
 ## Next Actions
 
-1. Wait for and record a fresh green four-way Docker validation on draft PR #24
-   with the reviewed correction from draft PR #27; keep both PRs unmerged and
-   perform no deployment.
+1. Keep draft PR #24's current head green; any head change must repeat project
+   policy and all four non-publishing Docker jobs. Keep PRs #24 and #27 unmerged and
+   perform no deployment without explicit human authorization.
 2. Run and record the pre-merge candidate cohort under issue #11.
 3. Complete the external Project/required-check rollout in issue #10 after the
    workflow lands.
