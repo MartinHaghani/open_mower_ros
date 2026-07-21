@@ -29,6 +29,7 @@ Observed from `docker/Dockerfile`:
 - Copies `docker/openmower_entrypoint.sh` as the entrypoint.
 - Runs `roslaunch open_mower open_mower.launch --screen` as the default command.
 - The mower-side Bluetooth manager uses the host BlueZ daemon over `/run/dbus/system_bus_socket`. Pi runtime helpers mount that socket when it exists, and the images install `python3-dbus` plus `python3-gi` for D-Bus and pairing-agent support.
+- Creates the non-root `openmower` runtime user and an `input` group with GID `996` before adding the user to `dialout` and `input`. Explicit group creation keeps multi-architecture builds deterministic when a minimal ROS base image omits the group. GID `996` is the current OSv2 compatibility assumption, not a universal Linux assignment; host-aware mapping and narrower device exposure are tracked in [issue #26](https://github.com/MartinHaghani/open_mower_ros/issues/26). Changing this deployment contract requires controlled Pi and controller validation.
 
 ### Legacy image
 

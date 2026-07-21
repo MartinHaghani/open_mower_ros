@@ -93,6 +93,7 @@ Observed from `docker/Dockerfile` and `.github/workflows/build-image.yaml`:
 
 - The default image uses `docker/Dockerfile`.
 - It builds the ROS stack and expects OSv2 or external system services to provide web and MQTT.
+- Its non-root `openmower` user belongs to `dialout` and an explicitly created `input` group at GID `996`, matching the current OSv2 device-access assumption. Host-aware mapping and narrower device exposure are tracked in [issue #26](https://github.com/MartinHaghani/open_mower_ros/issues/26).
 - The default container entrypoint is `docker/openmower_entrypoint.sh`.
 - The default container command runs:
 
