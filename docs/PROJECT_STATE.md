@@ -11,7 +11,7 @@ task start.
 
 ## Current Baseline
 
-- Last verified: 2026-07-21.
+- Last verified: 2026-08-04.
 - Branch used for this migration: `codex/open-mower-agent-os`.
 - Inspected baseline commit: `329726f` (`webui: compact map selector controls`).
 - Canonical repository: `MartinHaghani/open_mower_ros`; use the `origin` remote for
@@ -41,7 +41,7 @@ page cannot see uncommitted changes in another worktree.
 
 | Workstream | Status | Snapshot | Authoritative next-step source |
 |---|---|---|---|
-| Agent documentation, context, and Git operating system | active | Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) is open; corrected implementation head `b14d647` passed project policy and all four non-publishing Docker jobs in [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884), while the focused fix remains separately reviewable in draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27) | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1) and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
+| Agent documentation, context, and Git operating system | active | Tracking was reconciled on 2026-08-04. Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) remains open and unmerged; head `b6a39f3` passed project policy and all four non-publishing Docker jobs in [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511). The fresh-agent candidate cohort is in progress, while the focused fix remains separately reviewable in draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27). | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1), [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11), and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
 | Existing coverage planner lab | planned | P0, P1, P3, P10, P11, P12, and P13 are recorded as landed; P5 is the next sequence item | [roadmap](COVERAGE_PLANNER_ROADMAP.md) and [issue #3](https://github.com/MartinHaghani/open_mower_ros/issues/3) |
 | Coverage Planner V2 exploration | planned | M1 evidence and substantial M2.x local prototypes exist; M2 acceptance reconciliation and M3 candidate routing are outstanding | [algorithm status](COVERAGE_PLANNER_V2_ALGORITHM_PLAN.md#current-implementation-status) and [issue #8](https://github.com/MartinHaghani/open_mower_ros/issues/8) |
 | Passive SLAM confidence weighting | planned | No active implementation plan | [issue #2](https://github.com/MartinHaghani/open_mower_ros/issues/2) |
@@ -72,16 +72,15 @@ Tracked rollout gaps are:
   inline issue references. The Projects v2 board still requires separate OAuth
   `project` scope and is tracked
   by [issue #10](https://github.com/MartinHaghani/open_mower_ros/issues/10).
-- The two Codex desktop gardening jobs are paused because their saved prompts still
-  target the parked migration. Retarget and reactivate them only after this policy
-  lands, under issue #10 and the authority checks in
+- Issue [#10](https://github.com/MartinHaghani/open_mower_ros/issues/10) has distinct
+  rollout stages. Before merge, protect the temporary integration ref as PR-only or
+  decide to retire it into `main`, and resolve the Projects v2 OAuth/board decision.
+  Immediately after an approved merge, require the landed policy check only after
+  it passes, then retarget, dry-run, and reactivate the two paused Codex gardening
+  jobs. Their saved prompts still target the parked migration, so these post-merge
+  actions must not be treated as prerequisites that make the merge circular. See
   [AGENT_OPERATIONS.md](AGENT_OPERATIONS.md#scheduled-gardening).
-- Main protection is active without required CI checks; add the stable policy gate
-  only after the workflow lands and passes, also under issue #10.
-- Direct pushes to the temporary integration branch are human-gated by policy but
-  not yet proven blocked by live GitHub settings. Issue #10 must protect that ref
-  PR-only or retire it into `main` before required governance relies on it.
-- The manual fresh-agent candidate cohort required before merge is outstanding in
+- The manual fresh-agent candidate cohort required before merge is in progress in
   [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11); stochastic
   trials are evidence, not a required per-PR CI check.
 - Full-tree pre-commit debt is ratcheted to added/modified files and tracked by
@@ -92,8 +91,8 @@ Tracked rollout gaps are:
   [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), focused draft PR
   [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27), and portability
   follow-up [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26) own the
-  work. Corrected head `b14d647` passed default/legacy on amd64/arm64 in
-  [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884),
+  work. Current validated head `b6a39f3` passed default/legacy on amd64/arm64 in
+  [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511),
   with publishing jobs skipped. Neither PR was merged or deployed; any later head
   must retain the required checks, and the publishing manual-dispatch path is not a
   validation substitute.
@@ -103,12 +102,14 @@ linked issue is completed; do not add implementation checklists here.
 
 ## Next Actions
 
-1. Keep draft PR #24's current head green; any head change must repeat project
-   policy and all four non-publishing Docker jobs. Keep PRs #24 and #27 unmerged and
-   perform no deployment without explicit human authorization.
-2. Run and record the pre-merge candidate cohort under issue #11.
-3. Complete the external Project/required-check rollout in issue #10 after the
-   workflow lands.
+1. Complete and record the in-progress pre-merge candidate cohort under issue #11.
+2. Complete issue #10's pre-merge integration-boundary and Projects decision; keep
+   its required-check and gardening-automation activation steps explicitly
+   post-merge.
+3. Keep draft PR #24's validated head green. Any head change must repeat project
+   policy and all four non-publishing Docker jobs. Keep PRs #24 and #27 unmerged,
+   perform no deployment, and perform no live-hardware operation without explicit
+   human authorization.
 4. Resume planner and slope work only through their linked issues and active plans;
    preserve every unmerged worktree until issue #12 proves it is safe to clean.
 

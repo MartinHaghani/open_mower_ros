@@ -3,7 +3,7 @@
 - Status: Active
 - Owner: coordinating Codex agent
 - Created: 2026-07-15
-- Last updated: 2026-07-21
+- Last updated: 2026-08-04
 - Issue: [#1](https://github.com/MartinHaghani/open_mower_ros/issues/1)
 - Branch/worktree: `codex/open-mower-agent-os` at `/Users/martinhaghani/Code/open_mower_ros_agent_os_rescope`
 - Baseline commit: `329726f`
@@ -92,8 +92,18 @@ hardware operations.
   [run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884).
   Both policy checks passed, all four validation jobs passed, and the publishing
   `build` and `merge` jobs remained skipped. Neither PR was merged or deployed.
-- [ ] Create the Projects v2 board after the GitHub credential receives `project`
-  scope; add the policy gate as required only after it lands and passes.
+- [x] (2026-08-04) Reconciled the rollout tracking to replacement PR #24, current
+  candidate head `b6a39f3`, issue #11's candidate-cohort protocol, the paused
+  automation state, and the parked ALM migration. Head `b6a39f3` passed project
+  policy and all four non-publishing Docker jobs in
+  [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511);
+  publishing remained skipped, and no merge, deployment, or live-hardware operation
+  was performed.
+- [ ] (Pre-merge, issue #10) Protect the temporary integration ref as PR-only or
+  decide to retire it into `main`, and resolve the Projects v2 OAuth/board decision.
+- [ ] (Post-merge, issue #10) After an approved merge lands and the policy workflow
+  passes on its target ref, make the stable policy check required, then retarget,
+  dry-run, and reactivate the two paused gardening automations.
 - [x] (2026-07-15) Validated deterministic fresh-agent orientation, hooks, skill
   structure, configuration parsing, documentation-only/code/safety documentation
   impact, PR policy, and changed-file pre-commit behavior in the isolated clean
@@ -101,15 +111,19 @@ hardware operations.
 - [x] (2026-07-15) Reconciled migration artifacts and assigned every legacy
   first-party source TODO/FIXME marker through an exact-content validated register;
   issues #13–#20 capture the newly discovered work.
-- [ ] Run and record the required manual fresh-agent candidate cohort under issue
-  #11 before merge.
-- [ ] After all CI, candidate-cohort, and external rollout gates pass, obtain human
-  merge approval and move this plan to `completed/` in the completion change.
+- [ ] (2026-08-04) Complete and record the required manual fresh-agent candidate
+  cohort under issue #11 before merge; the cohort is in progress.
+- [ ] After current-head CI, the candidate cohort, and issue #10's pre-merge gates
+  pass, obtain human merge approval. After an approved merge, complete issue #10's
+  post-merge activation steps and move this plan to `completed/` in the completion
+  change.
 
-Exact next action: keep PR #24's current head green while completing the manual
-candidate cohort in issue #11 and external rollout in issue #10. Any head change
-must repeat project policy and all four non-publishing Docker jobs. Keep PRs #24 and
-#27 draft and unmerged, and perform no deployment without explicit human approval.
+Exact next action: complete and record the in-progress candidate cohort in
+issue #11, then complete issue #10's pre-merge integration-boundary and Projects
+decision.
+Any head change after validated head `b6a39f3` must repeat project policy and all
+four non-publishing Docker jobs. Keep PRs #24 and #27 draft and unmerged; perform no
+deployment or live-hardware operation without explicit human approval.
 
 ## Surprises & Discoveries
 
@@ -150,6 +164,11 @@ must repeat project policy and all four non-publishing Docker jobs. Keep PRs #24
 - A focused PR targeting `codex/remove-lowlevel-board` does not trigger the baseline
   four-way build, while that workflow's manual-dispatch path publishes images. The
   safe pre-merge evidence path is PR #24's PR-only, non-publishing validation job.
+- Issue #10 originally mixed work that can happen before merge with required-check
+  and automation activation that depends on the workflow already being landed.
+  Treating all of it as a pre-merge gate would be circular, so the rollout is now
+  explicitly divided into pre-merge governance decisions and immediate post-merge
+  activation.
 
 ## Decision Log
 
@@ -178,6 +197,10 @@ must repeat project policy and all four non-publishing Docker jobs. Keep PRs #24
   carry the same reviewed change on PR #24 only to obtain fresh non-publishing
   four-way evidence, and reject manual dispatch, merge, or deployment until that
   matrix is green.
+- 2026-08-04 — Split issue #10's rollout into pre-merge governance and post-merge
+  activation. The integration-boundary and Projects decision remain pre-merge;
+  requiring the policy check and retargeting paused automations occur only after an
+  approved merge lands and the workflow passes on its target ref.
 
 ## Outcomes & Retrospective
 
@@ -192,18 +215,19 @@ fresh-agent context assertions, strict all-scope and changed-scope hygiene,
 commit-range validation, Actionlint 1.7.12, Python compilation, JSON/TOML parsing,
 the pinned changed-file pre-commit hooks, and whitespace checks. The separately
 reviewed Docker correction also passes focused pre-commit, whitespace, and a
-disposable ARM64 ROS-base user/group test. Corrected head `b14d647` then passed all
-four non-publishing Docker jobs in
-[run 29793647884](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29793647884);
-any later head must retain those checks. No ROS, deployment, or live-hardware
+disposable ARM64 ROS-base user/group test. Current validated head `b6a39f3` passed
+all four non-publishing Docker jobs and project policy in
+[run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511);
+any later head must repeat those checks. No ROS, merge, deployment, or live-hardware
 operation was performed.
 
-The remaining rollout is deliberately external. Projects v2 needs one-time OAuth
-scope, and the policy gate cannot safely become a required check until its workflow
-has landed and passed; issue #10 owns both steps. The manual candidate cohort in
-issue #11 is also required before merge, while full-tree formatting cleanup remains
-separate in issue #21. This plan remains active through PR review and merge, then
-moves to `completed/`.
+The remaining rollout is staged. The manual candidate cohort in issue #11 is in
+progress and remains required before merge. Issue #10 owns the pre-merge
+integration-boundary and Projects decision; its required-check and gardening-job
+activation steps follow only after an approved merge because they depend on the
+landed workflow. Full-tree formatting cleanup remains separate in issue #21. This
+plan remains active through PR review, approved merge, and immediate post-merge
+activation, then moves to `completed/`.
 
 ## Context and Orientation
 
@@ -239,11 +263,12 @@ prohibited tracking patterns. Run it from pre-commit and a required GitHub Actio
 workflow. Add issue and PR templates, CODEOWNERS for safety-sensitive paths, and
 document the repository settings that cannot be enforced by checked-in files alone.
 
-Finally, test onboarding and closeout behavior in a clean checkout and across three
-representative scenarios. Maintain draft PR #24 through the fresh-agent cohort,
-external rollout, and corrected four-way Docker validation. Keep the prerequisite
-Docker correction separately reviewable in draft PR #27, and complete and archive
-this plan only after every merge gate passes and a human authorizes the merge.
+Finally, test onboarding and closeout behavior in clean baseline and candidate
+checkouts through the issue #11 cohort. Maintain draft PR #24 through that cohort,
+issue #10's pre-merge governance, and corrected four-way Docker validation. Keep the
+prerequisite Docker correction separately reviewable in draft PR #27. After every
+pre-merge gate passes, obtain human merge authorization; complete issue #10's
+post-merge activation before archiving this plan.
 
 ## Concrete Steps
 
@@ -384,3 +409,7 @@ migration as complete.
 - 2026-07-21 — Recorded fresh green policy and default/legacy by amd64/arm64
   validation on corrected head `b14d647`; publishing remained skipped and both PRs
   remained draft and unmerged.
+- 2026-08-04 — Reconciled tracking to current validated head `b6a39f3` and run
+  `29794246511`, marked the issue #11 candidate cohort in progress, and split issue
+  #10 into pre-merge governance and post-merge activation. No merge, deployment, or
+  live-hardware operation was performed.
