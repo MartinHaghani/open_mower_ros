@@ -6,6 +6,13 @@ cohort. Do not edit the template with measured results.
 ## Cohort Metadata
 
 - Status: Planned | Running | Complete | Invalidated
+- Evaluation tier: Calibration | Acceptance holdout
+- Holdout version:
+- Prompt-bank hash:
+- Fixture-bundle hash:
+- Scoring-key hash:
+- Blindness mechanism:
+- Valid / incomplete / invalidated trial counts:
 - Evaluation date:
 - Evaluator:
 - Tracking issue: [#11](https://github.com/MartinHaghani/open_mower_ros/issues/11)
@@ -20,6 +27,7 @@ cohort. Do not edit the template with measured results.
 - Trials per applicable case: minimum 3
 - Case order/randomization seed:
 - Known environment differences:
+- Evidence limitations:
 
 ## Comparability
 
@@ -36,6 +44,7 @@ permission differences that prevent a direct comparison.
 | Material unsupported claims | | | |
 | Documentation contradictions introduced | | | |
 | Fabricated validation/completion claims | | | |
+| Holdout blindness or answer-key exposure | | | |
 
 Any nonzero candidate gate is a material regression regardless of speed or aggregate
 score.
@@ -44,20 +53,24 @@ score.
 
 Report medians and worst observed values; link individual scorecards.
 
-| Case | Applicable? | Baseline score median/worst | Candidate score median/worst | Orientation seconds median/worst | Tool calls median/worst | Restart pass rate | Unsupported claims | Human corrections | Drift detected/missed/false | Token median | Scorecards |
-|---|---|---|---|---|---|---|---:|---:|---|---:|---|
-| C01 | | | | | | N/A | | | | | |
-| C02 | | | | | | | | | | | |
-| C03 | | | | | | N/A | | | | | |
-| C04 | | | | | | N/A | | | | | |
-| C05 | | | | | | N/A | | | | | |
-| C06 | | | | | | N/A | | | | | |
-| C07 | | | | | | N/A | | | | | |
-| C08 | | | | | | N/A | | | | | |
-| C09 | | | | | | N/A | | | | | |
-| C10 | | | | | | N/A | | | | | |
-| C11 | | | | | | N/A | | | | | |
-| C12 | | | | | | | | | | | |
+| Case | Applicable? | Valid trials | Invalidated trials | Baseline score median/worst | Candidate score median/worst | Orientation seconds median/worst | Tool calls median/worst | Restart pass rate | Unsupported claims | Human corrections | Drift detected/missed/false | Token median | Scorecards |
+|---|---|---:|---:|---|---|---|---|---|---|---:|---:|---|---:|---|
+| C01 | | | | | | | | N/A | | | | | |
+| C02 | | | | | | | | | | | | | |
+| C03 | | | | | | | | N/A | | | | | |
+| C04 | | | | | | | | N/A | | | | | |
+| C05 | | | | | | | | N/A | | | | | |
+| C06 | | | | | | | | N/A | | | | | |
+| C07 | | | | | | | | N/A | | | | | |
+| C08 | | | | | | | | N/A | | | | | |
+| C09 | | | | | | | | N/A | | | | | |
+| C10 | | | | | | | | N/A | | | | | |
+| C11 | | | | | | | | N/A | | | | | |
+| C12 | | | | | | | | | | | | | |
+
+Invalidated trials remain visible for auditability but are excluded from every
+aggregate. Baseline `N/A`, `Not run`, `Incomplete`, and `Invalidated` are distinct
+states.
 
 ## Aggregate Comparison
 

@@ -41,7 +41,7 @@ page cannot see uncommitted changes in another worktree.
 
 | Workstream | Status | Snapshot | Authoritative next-step source |
 |---|---|---|---|
-| Agent documentation, context, and Git operating system | active | Tracking was reconciled on 2026-08-04. Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) remains open and unmerged; head `b6a39f3` passed project policy and all four non-publishing Docker jobs in [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511). The fresh-agent candidate cohort is in progress, while the focused fix remains separately reviewable in draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27). | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1), [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11), and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
+| Agent documentation, context, and Git operating system | active | Tracking was reconciled on 2026-08-04. Draft PR [#24](https://github.com/MartinHaghani/open_mower_ros/pull/24) remains open and unmerged. Prior head `24cad13` passed project policy and all four non-publishing Docker jobs in [run 30954272378](https://github.com/MartinHaghani/open_mower_ros/actions/runs/30954272378). The initial public-case cohort was invalidated for acceptance after exact case specifications were reachable; its artifacts remain calibration evidence. A blind private holdout rerun is required. The focused Docker fix remains separately reviewable in draft PR [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27). | [issue #1](https://github.com/MartinHaghani/open_mower_ros/issues/1), [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11), and the [active migration ExecPlan](exec-plans/active/agent-operating-system-migration.md) |
 | Existing coverage planner lab | planned | P0, P1, P3, P10, P11, P12, and P13 are recorded as landed; P5 is the next sequence item | [roadmap](COVERAGE_PLANNER_ROADMAP.md) and [issue #3](https://github.com/MartinHaghani/open_mower_ros/issues/3) |
 | Coverage Planner V2 exploration | planned | M1 evidence and substantial M2.x local prototypes exist; M2 acceptance reconciliation and M3 candidate routing are outstanding | [algorithm status](COVERAGE_PLANNER_V2_ALGORITHM_PLAN.md#current-implementation-status) and [issue #8](https://github.com/MartinHaghani/open_mower_ros/issues/8) |
 | Passive SLAM confidence weighting | planned | No active implementation plan | [issue #2](https://github.com/MartinHaghani/open_mower_ros/issues/2) |
@@ -80,9 +80,12 @@ Tracked rollout gaps are:
   jobs. Their saved prompts still target the parked migration, so these post-merge
   actions must not be treated as prerequisites that make the merge circular. See
   [AGENT_OPERATIONS.md](AGENT_OPERATIONS.md#scheduled-gardening).
-- The manual fresh-agent candidate cohort required before merge is in progress in
-  [issue #11](https://github.com/MartinHaghani/open_mower_ros/issues/11); stochastic
-  trials are evidence, not a required per-PR CI check.
+- The initial fresh-agent cohort used public cases that exposed their exact
+  specifications, so it is invalidated as pre-merge acceptance evidence and
+  preserved only for calibration and harness diagnosis. Issue
+  [#11](https://github.com/MartinHaghani/open_mower_ros/issues/11) requires a sealed,
+  blind private holdout rerun; stochastic trials are evidence, not a required
+  per-PR CI check.
 - Full-tree pre-commit debt is ratcheted to added/modified files and tracked by
   [issue #21](https://github.com/MartinHaghani/open_mower_ros/issues/21).
 - Parallel slope branches require the branch-by-branch audit in issue #12.
@@ -91,8 +94,8 @@ Tracked rollout gaps are:
   [#25](https://github.com/MartinHaghani/open_mower_ros/issues/25), focused draft PR
   [#27](https://github.com/MartinHaghani/open_mower_ros/pull/27), and portability
   follow-up [#26](https://github.com/MartinHaghani/open_mower_ros/issues/26) own the
-  work. Current validated head `b6a39f3` passed default/legacy on amd64/arm64 in
-  [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511),
+  work. Prior validated head `24cad13` passed default/legacy on amd64/arm64 in
+  [run 30954272378](https://github.com/MartinHaghani/open_mower_ros/actions/runs/30954272378),
   with publishing jobs skipped. Neither PR was merged or deployed; any later head
   must retain the required checks, and the publishing manual-dispatch path is not a
   validation substitute.
@@ -102,7 +105,9 @@ linked issue is completed; do not add implementation checklists here.
 
 ## Next Actions
 
-1. Complete and record the in-progress pre-merge candidate cohort under issue #11.
+1. Seal and hash a private rotating holdout, prove evaluated-session blindness, and
+   complete at least three valid baseline and candidate trials per applicable case
+   under issue #11. Keep exposed trials preserved and excluded from acceptance.
 2. Complete issue #10's pre-merge integration-boundary and Projects decision; keep
    its required-check and gardening-automation activation steps explicitly
    post-merge.

@@ -1,5 +1,14 @@
 # Fresh-agent evaluation cases
 
+**Classification: public calibration suite.**
+
+This file intentionally exposes prompts, expected sources, and success criteria. It
+supports harness calibration and diagnostic regression runs, not blind pre-merge
+acceptance. A trial that uses these exact cases, or can inspect this file as its
+answer key, is `Calibration` or `Invalidated for acceptance`. Private rotating
+holdout material stays outside the evaluated repository; issue #11 and cohort
+records expose only its version and cryptographic hashes while it is active.
+
 Purpose: define twelve repeatable cases for measuring orientation, handoff, authority,
 safety, Git hygiene, issue tracking, documentation drift, and subagent use.
 

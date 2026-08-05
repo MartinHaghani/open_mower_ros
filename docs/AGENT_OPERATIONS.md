@@ -271,8 +271,9 @@ after OAuth, workflow, and independent-trust prerequisites are proven.
 
 The four-week `OpenMower agent context regression` job samples at least three
 risk-balanced evaluation cases with three trials per case when supported, records
-raw measures, and updates issue #11. This periodic sample does not replace the full
-candidate cohort required before merging material context-policy changes.
+whether the run is `Calibration` or `Acceptance holdout`, records raw measures, and
+updates issue #11. This periodic sample does not replace the full private candidate
+holdout required before merging material context-policy changes.
 
 It may open issues or a draft PR for bounded low-risk repairs. It must not merge,
 force-push, delete unique worktrees, change mower runtime code, deploy, alter live
@@ -282,12 +283,13 @@ runs so their worktrees do not accumulate.
 
 ## Evaluate performance
 
-Use [agent-evals/README.md](agent-evals/README.md) and its twelve representative cases
-to compare fresh-agent orientation, restart success, unsupported claims, human
-corrections, documentation drift, end-state correctness, tool use, and tokens.
-Deterministic structural checks run in CI; stochastic model trials run manually or
-on a schedule in disposable worktrees. Never treat a single model sample as a merge
-gate.
+Use the public cases in [agent-evals/CASES.md](agent-evals/CASES.md) for calibration
+and diagnostics. Use a materially different private rotating holdout governed by
+[agent-evals/README.md](agent-evals/README.md) for pre-merge acceptance. Evaluated
+holdout sessions receive only the active prompt and cannot access exact case
+specifications, expected behavior, scoring keys, or prior results. Deterministic
+structural checks run in CI; stochastic model trials run manually or on a schedule
+in disposable worktrees. Never treat a single model sample as a merge gate.
 
 ## Change the operating system
 

@@ -99,6 +99,10 @@ hardware operations.
   [run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511);
   publishing remained skipped, and no merge, deployment, or live-hardware operation
   was performed.
+- [x] (2026-08-04) Reconciled current state and external tracking at `24cad13`;
+  project policy and all four non-publishing Docker jobs passed in
+  [run 30954272378](https://github.com/MartinHaghani/open_mower_ros/actions/runs/30954272378).
+  Publishing remained skipped and the PR remained draft and unmerged.
 - [ ] (Pre-merge, issue #10) Protect the temporary integration ref as PR-only or
   decide to retire it into `main`, and resolve the Projects v2 OAuth/board decision.
 - [ ] (Post-merge, issue #10) After an approved merge lands and the policy workflow
@@ -111,17 +115,24 @@ hardware operations.
 - [x] (2026-07-15) Reconciled migration artifacts and assigned every legacy
   first-party source TODO/FIXME marker through an exact-content validated register;
   issues #13–#20 capture the newly discovered work.
-- [ ] (2026-08-04) Complete and record the required manual fresh-agent candidate
-  cohort under issue #11 before merge; the cohort is in progress.
+- [x] (2026-08-04) Invalidated the initial public-case cohort as pre-merge
+  acceptance evidence after traces showed evaluated sessions could inspect exact
+  prompts, expected sources, and success criteria. Preserved the raw artifacts and
+  diagnostic scoring; none count toward acceptance.
+- [ ] (2026-08-04) Create and seal a materially different private rotating holdout,
+  record prompt, fixture, and scoring-key hashes, prove session blindness, and run
+  at least three valid baseline and candidate trials per applicable capability.
 - [ ] After current-head CI, the candidate cohort, and issue #10's pre-merge gates
   pass, obtain human merge approval. After an approved merge, complete issue #10's
   post-merge activation steps and move this plan to `completed/` in the completion
   change.
 
-Exact next action: complete and record the in-progress candidate cohort in
-issue #11, then complete issue #10's pre-merge integration-boundary and Projects
-decision.
-Any head change after validated head `b6a39f3` must repeat project policy and all
+Exact next action: seal and hash the private acceptance holdout, pass its blindness
+preflight, and run the baseline and candidate cohorts under issue #11. The resume
+fixture must provide a synthetic landed policy commit and a state page consistent
+with that landing before measuring adoption or restart behavior. Then complete
+issue #10's pre-merge integration-boundary and Projects decision.
+Any head change after validated head `24cad13` must repeat project policy and all
 four non-publishing Docker jobs. Keep PRs #24 and #27 draft and unmerged; perform no
 deployment or live-hardware operation without explicit human approval.
 
@@ -169,6 +180,11 @@ deployment or live-hardware operation without explicit human approval.
   Treating all of it as a pre-merge gate would be circular, so the rollout is now
   explicitly divided into pre-merge governance decisions and immediate post-merge
   activation.
+- The first candidate cohort was not blind: `docs/agent-evals/CASES.md` exposed the
+  exact prompts, expected sources, and success criteria, and several sessions read
+  their own case specifications. One resume fixture also expected adoption without
+  providing a genuinely landed policy commit. These runs remain useful calibration
+  and harness evidence but cannot support a pre-merge acceptance decision.
 
 ## Decision Log
 
@@ -201,6 +217,11 @@ deployment or live-hardware operation without explicit human approval.
   activation. The integration-boundary and Projects decision remain pre-merge;
   requiring the policy check and retargeting paused automations occur only after an
   approved merge lands and the workflow passes on its target ref.
+- 2026-08-04 — Classify checked-in cases as public calibration only. Pre-merge
+  acceptance requires a materially different private rotating holdout outside the
+  evaluated repository, sealed hashes, a blindness preflight, and invalidation of
+  any trial exposed to its exact specification. Resume testing must model a truly
+  landed policy state rather than asking an agent to adopt an unmerged candidate.
 
 ## Outcomes & Retrospective
 
@@ -215,14 +236,16 @@ fresh-agent context assertions, strict all-scope and changed-scope hygiene,
 commit-range validation, Actionlint 1.7.12, Python compilation, JSON/TOML parsing,
 the pinned changed-file pre-commit hooks, and whitespace checks. The separately
 reviewed Docker correction also passes focused pre-commit, whitespace, and a
-disposable ARM64 ROS-base user/group test. Current validated head `b6a39f3` passed
+disposable ARM64 ROS-base user/group test. Prior validated head `24cad13` passed
 all four non-publishing Docker jobs and project policy in
-[run 29794246511](https://github.com/MartinHaghani/open_mower_ros/actions/runs/29794246511);
+[run 30954272378](https://github.com/MartinHaghani/open_mower_ros/actions/runs/30954272378);
 any later head must repeat those checks. No ROS, merge, deployment, or live-hardware
 operation was performed.
 
-The remaining rollout is staged. The manual candidate cohort in issue #11 is in
-progress and remains required before merge. Issue #10 owns the pre-merge
+The remaining rollout is staged. The first public-case cohort was invalidated for
+acceptance after answer-key exposure and a semantically incomplete resume fixture;
+no acceptance conclusion is drawn from it. A corrected private holdout cohort in
+issue #11 remains required before merge. Issue #10 owns the pre-merge
 integration-boundary and Projects decision; its required-check and gardening-job
 activation steps follow only after an approved merge because they depend on the
 landed workflow. Full-tree formatting cleanup remains separate in issue #21. This
@@ -413,3 +436,7 @@ migration as complete.
   `29794246511`, marked the issue #11 candidate cohort in progress, and split issue
   #10 into pre-merge governance and post-merge activation. No merge, deployment, or
   live-hardware operation was performed.
+- 2026-08-04 — Invalidated the public-case cohort for acceptance, preserved it as
+  calibration evidence, separated public calibration from a blind private holdout,
+  and corrected the resume-fixture requirement to use a synthetic landed policy
+  state. No merge, deployment, or live-hardware operation was performed.
