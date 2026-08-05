@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "canonical_repository": "MartinHaghani/open_mower_ros",
+  "integration_base": "origin/codex/remove-lowlevel-board"
+}
